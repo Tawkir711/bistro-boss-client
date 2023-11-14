@@ -1,33 +1,38 @@
-import React, { useContext } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
-import { AuthContext } from '../../Components/Provider/AuthProvider';
-import Swal from 'sweetalert2';
+import React, { useContext } from "react";
+import { Helmet } from "react-helmet-async";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../Components/Provider/AuthProvider";
+import Swal from "sweetalert2";
 
 const SignUp = () => {
-
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
-  const { createUser } = useContext(AuthContext);
+  const { createUser, updateUserProfile } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const onSubmit = (data) => {
-    console.log(data)
+    console.log(data);
     createUser(data.email, data.password)
-      .then(result => {
+      .then((result) => {
         const loggedUser = result.user;
-        if (loggedUser) {
+        console.log(loggedUser);
+        updateUserProfile(data.name, data.photoURL).then(() => {
+          console.log("user profile info updated");
+          reset();
           Swal.fire({
             icon: "success",
-            title: "Done",
-            text: "Your Sign Up Successfully",
-            
+            title: "Done...",
+            text: "User created successfully"
           });
-        }
-    })
+          navigate('/login')
+        });
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -59,6 +64,20 @@ const SignUp = () => {
               />
               {errors.name && (
                 <span className="text-red-600 ">Name is required</span>
+              )}
+            </div>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Photo URL</span>
+              </label>
+              <input
+                type="text"
+                placeholder="photo URL"
+                {...register("photoURL", { required: true })}
+                className="input input-bordered"
+              />
+              {errors.photoURL && (
+                <span className="text-red-600 ">Photo URL is required</span>
               )}
             </div>
             <div className="form-control">
@@ -98,13 +117,27 @@ const SignUp = () => {
               {errors.password?.type === "minLength" && (
                 <p className="text-red-600">Password must be 6 character</p>
               )}
-              {errors.password?.type === 'pattern' && <p className="text-red-600">Password must have one Uppercase, one lower case, one number and one special character.</p>}
+              {errors.password?.type === "pattern" && (
+                <p className="text-red-600">
+                  Password must have one Uppercase, one lower case, one number
+                  and one special character.
+                </p>
+              )}
             </div>
             <div className="form-control mt-6">
-              <input className="btn btn-primary" type="submit" value="Sign Up" />
+              <input
+                className="btn btn-primary"
+                type="submit"
+                value="Sign Up"
+              />
             </div>
           </form>
-          <p>Already have a account? <small className='text-blue-700 text-xl font-semibold'><Link to={'/login'}>Login</Link> </small></p>
+          <p>
+            Already have a account?{" "}
+            <small className="text-blue-700 text-xl font-semibold">
+              <Link to={"/login"}>Login</Link>{" "}
+            </small>
+          </p>
         </div>
       </div>
     </div>
