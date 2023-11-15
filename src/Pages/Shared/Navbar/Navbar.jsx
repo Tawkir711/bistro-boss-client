@@ -29,7 +29,10 @@ const Navbar = () => {
         <Link to={"/order/salad"}>Order Food</Link>
       </li>
       <li>
-        <Link to={'/'}>
+        <Link to={"/dashboard"}>Dashboard</Link>
+      </li>
+      <li>
+        <Link to={'/dashboard/cart'}>
           <button className="btn btn-sm"><FaShoppingCart className="mr-2"/>
             <div className="badge badge-secondary">+{ cart.length}</div>
           </button>
@@ -78,7 +81,7 @@ const Navbar = () => {
         </div>
         <a className="btn btn-ghost normal-case text-xl">
           Bistro Boss <br />
-          Res{" "}
+          Restaurant
         </a>
       </div>
       <div className="navbar-center hidden lg:flex">
