@@ -4,8 +4,11 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Components/Provider/AuthProvider";
 import Swal from "sweetalert2";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
+import SocialLogin from "../../Components/SocalLogin/SocalLogin";
 
 const SignUp = () => {
+  const axiosPublic = useAxiosPublic();
   const {
     register,
     handleSubmit,
@@ -22,14 +25,23 @@ const SignUp = () => {
         const loggedUser = result.user;
         console.log(loggedUser);
         updateUserProfile(data.name, data.photoURL).then(() => {
-          console.log("user profile info updated");
-          reset();
-          Swal.fire({
-            icon: "success",
-            title: "Done...",
-            text: "User created successfully"
-          });
-          navigate('/login')
+          // create user entry in the database.
+          const userInfo = {
+            name: data.name,
+            email: data.email
+          }
+          axiosPublic.post('/users', userInfo)
+            .then(res => {
+              if (res.data.insertedId) {
+                reset();
+                Swal.fire({
+                  icon: "success",
+                  title: "Done...",
+                  text: "User created successfully"
+                });
+                navigate('/login')
+            }
+          })
         });
       })
       .catch((error) => console.log(error));
@@ -40,14 +52,9 @@ const SignUp = () => {
       <Helmet>
         <title>Bistro Boss / Sign Up</title>
       </Helmet>
-      <div className="hero-content flex-col lg:flex-row-reverse">
-        <div className="text-center lg:text-left">
-          <h1 className="text-5xl font-bold">Sign Up now!</h1>
-          <p className="py-6">
-            Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
-            excepturi exercitationem quasi. In deleniti eaque aut repudiandae et
-            a id nisi.
-          </p>
+      <div className="hero-content flex-col ">
+        <div className="text-center ">
+          <h1 className="text-5xl font-bold">Sign Up now......!</h1>
         </div>
         <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
           <form onSubmit={handleSubmit(onSubmit)} className="card-body">
@@ -132,11 +139,12 @@ const SignUp = () => {
               />
             </div>
           </form>
-          <p>
-            Already have a account?{" "}
+          <p className="px-6">
+            Already have a account?
             <small className="text-blue-700 text-xl font-semibold">
-              <Link to={"/login"}>Login</Link>{" "}
+              <Link to={"/login"}>Login</Link>
             </small>
+            <SocialLogin></SocialLogin>
           </p>
         </div>
       </div>

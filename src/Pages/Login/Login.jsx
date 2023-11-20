@@ -9,6 +9,7 @@ import { AuthContext } from '../../Components/Provider/AuthProvider';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import Swal from 'sweetalert2';
+import SocialLogin from '../../Components/SocalLogin/SocalLogin';
 
 
 const Login = () => {
@@ -124,11 +125,12 @@ const Login = () => {
               />
             </div>
           </form>
-          <p>
-            New Here? Create an account{" "}
+          <p className='px-6'>
+            New Here? Create an account
             <small className="text-blue-700 text-xl font-semibold">
-              <Link to={"/signup"}>SignUP </Link>{" "}
+              <Link to={"/signup"}>SignUP </Link>
             </small>
+            <SocialLogin></SocialLogin>
           </p>
         </div>
       </div>
